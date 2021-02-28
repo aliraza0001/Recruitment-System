@@ -14,7 +14,7 @@ import { Text, Button } from "react-native-elements";
 // import { useDispatch, useSelector } from "react-redux";
 // import { authState } from "../store/type";
 import { useForm, Controller } from "react-hook-form";
-
+import AuthService from "../services/Auth";
 const LoginScreen = ({ navigation }) => {
   const { control, handleSubmit, errors } = useForm();
   const onSubmit = (data) => console.log(data);
@@ -28,6 +28,15 @@ const LoginScreen = ({ navigation }) => {
   //     navigation.navigate("Home");
   //   }
   // }, [state.login]);
+
+  const LoginHandler = async () => {
+    try {
+      const {user} = await AuthService.signUp("test4@gmail.com", "123456");
+      console.log("res----> ", user);
+    } catch (error) {
+      console.log("error----> ", error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -95,7 +104,7 @@ const LoginScreen = ({ navigation }) => {
               titleStyle={{
                 color: "white",
               }}
-              onPress={handleSubmit(onSubmit)}
+              onPress={LoginHandler}
               // loading={state.loading}
               // disabled={state.loading}
             />
