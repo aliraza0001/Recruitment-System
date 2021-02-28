@@ -1,3 +1,4 @@
+import { Alert } from "react-native";
 import Auth from "../../services/Auth";
 import { AuthState } from "../type";
 
@@ -24,7 +25,7 @@ export const SignUp = (name, email, password, userType) => {
 
 export const Login = (email, password, userType) => {
   return async (dispatch) => {
-    console.log('email, password, userType',email, password, userType)
+    console.log("email, password, userType", email, password, userType);
     dispatch({ type: AuthState, payload: { loading: true } });
     try {
       const { user } = await Auth.signin(email, password);
@@ -37,7 +38,11 @@ export const Login = (email, password, userType) => {
             type: AuthState,
             payload: { loading: false, isLogin: true, user: response },
           });
-        } else await Auth.Logout();
+        } else {
+          dispatch({ type: AuthState, payload: { loading: false } });
+          await Auth.Logout();
+          Alert.alert("User type is incorrect");
+        }
       } else dispatch({ type: AuthState, payload: { loading: false } });
     } catch (error) {
       dispatch({ type: AuthState, payload: { loading: false } });
