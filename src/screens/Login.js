@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {StyleSheet,View,TouchableOpacity,SafeAreaView,ScrollView,Alert,Image,ActivityIndicator} from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  Alert,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { Input, Text, Button } from "react-native-elements";
- import {Login} from '../store/Actions/Auth';
+import { Login } from "../store/Actions/Auth";
 import { useDispatch, useSelector } from "react-redux";
-import {authState} from '../store/type';
+import { AuthState } from "../store/type";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -14,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
 
   const LoginHandler = () => {
     if (email && password) {
-      dispatch(Login(email, password));
+      dispatch(Login(email, password, "student"));
     } else {
       Alert.alert("Email and Password Are Required");
     }
@@ -22,7 +31,7 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (state.login) {
-      dispatch({ type: authState, payload: { loading: false } });
+      dispatch({ type: AuthState, payload: { login: false } });
       navigation.navigate("Home");
     }
   }, [state.login]);

@@ -15,10 +15,7 @@ export default (state = initalState, action) => {
         ...action.payload,
       };
     case LogOut:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return initalState;
 
     default:
       return state;
