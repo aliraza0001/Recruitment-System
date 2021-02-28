@@ -3,23 +3,15 @@ import Auth from '../../services/Auth';
 import App from '../../services/firebase';
 
 export const Login = (email, password) => {
-  return (dispatch) => {
-            // App.auth().signInWithEmailAndPassword(email, password)
-            // .then((user) => {
-            // console.log(user, "ui")
-            // dispatch({type: authState, payload: {loading: true}});
-            // })
-            // .catch((error)=> {
-            //   console.log(error.message)
-            // })
+  return async (dispatch) => {
      dispatch({type: authState, payload: {loading: true}});
+         Auth.signUp(email, password)
     try {
-      const {user} = await Auth.signin(email, password)
+      const {user} = await Auth.signUp(email, password)
       console.log(user, "User")
       if (user?.uid) {
         const userData = await Auth.createUser(uid, user);
         console.log('userData', userData);
-        
         dispatch({
           type: authState,
           payload: {isLogin: true, loading: false, user: userData?._data},
