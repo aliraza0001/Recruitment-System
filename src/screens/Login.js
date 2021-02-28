@@ -1,42 +1,31 @@
-// import React, {useEffect } from "react";
-import React from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  ActivityIndicator,
-  Image,
-  TextInput,
-} from "react-native";
-import { Text, Button } from "react-native-elements";
-// import { useDispatch, useSelector } from "react-redux";
-// import { authState } from "../store/type";
-import { useForm, Controller } from "react-hook-form";
-import AuthService from "../services/Auth";
+import React, { useState, useEffect } from "react";
+import {StyleSheet,View,TouchableOpacity,SafeAreaView,ScrollView,Alert,Image,ActivityIndicator} from "react-native";
+import { Input, Text, Button } from "react-native-elements";
+ import {Login} from '../store/Actions/Auth';
+import { useDispatch, useSelector } from "react-redux";
+import {authState} from '../store/type';
+
 const LoginScreen = ({ navigation }) => {
-  const { control, handleSubmit, errors } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // const dispatch = useDispatch();
-  // const state = useSelector((state) => state.Auth);
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.Auth);
 
-  // useEffect(() => {
-  //   if (state.login) {
-  //     dispatch({ type: authState, payload: { loading: false } });
-  //     navigation.navigate("Home");
-  //   }
-  // }, [state.login]);
-
-  const LoginHandler = async () => {
-    try {
-      const {user} = await AuthService.signUp("test4@gmail.com", "123456");
-      console.log("res----> ", user);
-    } catch (error) {
-      console.log("error----> ", error);
+  const LoginHandler = () => {
+    if (email && password) {
+      dispatch(Login(email, password));
+    } else {
+      Alert.alert("Email and Password Are Required");
     }
   };
+
+  useEffect(() => {
+    if (state.login) {
+      dispatch({ type: authState, payload: { loading: false } });
+      navigation.navigate("Home");
+    }
+  }, [state.login]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -56,44 +45,24 @@ const LoginScreen = ({ navigation }) => {
               placeholder={ActivityIndicator}
             />
           </View>
-
-          <Controller
-            control={control}
-            render={({ onChange, onBlur, value }) => (
-              <>
-                <Text style={styles.label}>Email:</Text>
-                <TextInput
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={(value) => onChange(value)}
-                  value={value}
-                />
-              </>
-            )}
-            name="email"
-            rules={{ required: true }}
-            defaultValue=""
+          <Text style={styles.label}>Email:</Text>
+          <Input
+            placeholder="Enter Your Email"
+            onChangeText={(val) => setEmail(val)}
+            value={email}
+            keyboardType="email-address"
+            require
           />
-          {errors.email && <Text>This is required.</Text>}
+          <Text style={styles.label}>Password:</Text>
 
-          <Controller
-            control={control}
-            render={({ onChange, onBlur, value }) => (
-              <>
-                <Text style={styles.label}>Password:</Text>
-                <TextInput
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={(value) => onChange(value)}
-                  value={value}
-                />
-              </>
-            )}
-            name="password"
-            rules={{ required: true }}
-            defaultValue=""
+          <Input
+            placeholder="Enter Your Password"
+            errorStyle={{ color: "red" }}
+            secureTextEntry={true}
+            value={password}
+            require
+            onChangeText={(val) => setPassword(val)}
           />
-          {errors.password && <Text>This is required.</Text>}
           <View style={styles.container}>
             <Button
               title="Login"
@@ -105,10 +74,11 @@ const LoginScreen = ({ navigation }) => {
                 color: "white",
               }}
               onPress={LoginHandler}
-              // loading={state.loading}
-              // disabled={state.loading}
+              loading={state.loading}
+              disabled={state.loading}
             />
           </View>
+
           <View style={styles.accountSetting}>
             <Text>Don't have an Accout?</Text>
             <TouchableOpacity
@@ -116,7 +86,7 @@ const LoginScreen = ({ navigation }) => {
                 navigation.navigate("Register");
               }}
             >
-              <Text>Register</Text>
+              <Text style={{ color: "#34495e" }}>Register</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -128,7 +98,6 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
-    backgroundColor: "white",
   },
   label: {
     fontSize: 14,
